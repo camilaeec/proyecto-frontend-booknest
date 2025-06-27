@@ -6,10 +6,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "#10141A",      
-        accent: "#4A90E2",       
-        midnight: "#273447",     
-        lightGray: "#DCE3EA",  
+        'booknest-primary': '#10141A',
+        'booknest-accent': '#4A90E2',
+        'booknest-midnight': '#273447',
+        'booknest-light-gray': '#DCE3EA'  
       },
     },
   },

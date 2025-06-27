@@ -8,10 +8,11 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
+  withCredentials: true   
 });
 
 // Interceptor para agregar token JWT
-api.interceptors.request.use((config) => {
+api.interceptors.request.use(config => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -23,26 +24,20 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   response => response,
   error => {
-    if (error.response) {
-      const { status } = error.response;
-      
-      if (status === 401) {
-        // Redirigir a login si no está autenticado
-        localStorage.removeItem('token');
-        window.location.href = '/login';
-      }
-      
-      const errorMessage = error.response.data?.message || 
-                           error.message || 
-                           'Error en la solicitud';
-      
-      console.error(`Error ${status}: ${errorMessage}`);
-      throw new Error(errorMessage);
+    if (error.response?.status === 403) {
+      console.error('Acceso denegado - Token inválido o expirado');
     }
-    
-    console.error('Error de red:', error.message);
-    throw new Error('Error de conexión con el servidor');
+    return Promise.reject(error);
   }
-);
+)
+
+api.interceptors.request.use(config => {
+  const token = localStorage.getItem('token');
+  console.log('Token:', token); // Agrega esto
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 export default api;

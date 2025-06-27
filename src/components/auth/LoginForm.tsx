@@ -1,3 +1,4 @@
+// src/components/auth/LoginForm.tsx
 import { useState } from 'react';
 
 interface LoginFormProps {
@@ -24,7 +25,7 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-4 py-2 border border-booknest-light-gray rounded-lg focus:ring-booknest-accent focus:border-booknest-accent"
+          className="w-full px-4 py-2 border border-booknest-light-gray rounded-lg focus:ring-booknest-accent focus:border-booknest-accent text-booknest-midnight"
           required
         />
       </div>
@@ -38,14 +39,14 @@ const LoginForm = ({ onSubmit }: LoginFormProps) => {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-4 py-2 border border-booknest-light-gray rounded-lg focus:ring-booknest-accent focus:border-booknest-accent"
+          className="w-full px-4 py-2 border border-booknest-light-gray rounded-lg focus:ring-booknest-accent focus:border-booknest-accent text-booknest-midnight"
           required
         />
       </div>
       
       <button 
         type="submit" 
-        className="w-full bg-booknest-accent text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition-colors"
+        className="w-full bg-booknest-accent text-booknest-white py-3 rounded-lg font-medium hover:bg-blue-600 transition-colors"
       >
         Iniciar Sesión
       </button>

@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
-import { getMe } from '../services/authService';
 import * as authService from '../services/authService';
 import type { User } from '../types/userTypes';
+import api from '../services/api';
 
 interface AuthContextType {
   user: User | null;
@@ -12,7 +12,6 @@ interface AuthContextType {
   loading: boolean;
 }
 
-
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -22,55 +21,69 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   useEffect(() => {
     const initAuth = async () => {
       const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          // Verifica si el token es válido
-          const isValid = await verifyToken(token);
-          if (isValid) {
-            const userData = await getMe();
-            setUser(userData);
-          } else {
-            logout();
-          }
-        } catch (error) {
-          logout();
-        }
+      console.log('Token encontrado en initAuth:', token); // Para depuración
+      
+      if (!token) {
+        console.log('No hay token, marcando como no autenticado');
+        setLoading(false);
+        return;
       }
-      setLoading(false);
+
+      try {
+        // Agrega el token a los headers de axios
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        
+        const userData = await authService.getMe();
+        console.log('Datos de usuario obtenidos:', userData); // Para depuración
+        
+        setUser(userData);
+      } catch (error) {
+        console.error('La verificación del token falló', error);
+        logout();
+      } finally {
+        setLoading(false);
+      }
     };
 
     initAuth();
   }, []);
 
-  const verifyToken = async (token: string): Promise<boolean> => {
-    try {
-      return true; 
-    } catch (error) {
-      return false;
-    }
-  };
-
   const register = async (userData: any) => {
     try {
       const response = await authService.register(userData);
-      const token = response.token; // Asume que el backend devuelve un token
+      const token = response.token;
+      
+      if (!token) {
+        throw new Error("Token no recibido del servidor");
+      }
+      
       localStorage.setItem('token', token);
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       
       const userDataResponse = await authService.getMe();
       setUser(userDataResponse);
+    } catch (error: any) {
+      // Manejo de errores...
+    }
+  };
+
+  const login = async (email: string, password: string) => {
+    try {
+      const { token } = await authService.login(email, password);
+      localStorage.setItem('token', token);
+      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      
+      const userData = await authService.getMe();
+      setUser(userData);
     } catch (error) {
-      console.error('Error during registration:', error);
+      console.error('Error en login:', error);
       throw error;
     }
   };
 
-  const login = (token: string) => {
-    localStorage.setItem('token', token);
-    // Obtener datos del usuario y setUser
-  };
-
   const logout = () => {
     localStorage.removeItem('token');
+    delete api.defaults.headers.common['Authorization'];
     setUser(null);
   };
 
@@ -78,6 +91,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     user,
     isAuthenticated: !!user,
     login,
+    register,
     logout,
     loading
   };
@@ -88,7 +102,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error('useAuth debe usarse dentro de un AuthProvider');
   }
   return context;
 };

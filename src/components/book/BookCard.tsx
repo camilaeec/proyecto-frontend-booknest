@@ -1,23 +1,22 @@
 import { Link } from 'react-router-dom';
-
-interface Book {
-  id: number;
-  title: string;
-  author: string;
-  price: number;
-  image?: string;
-}
+import { type Book } from '../../types/bookTypes';
 
 interface BookCardProps {
   book: Book;
+  showUserActions?: boolean;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
 
-const BookCard = ({ book }: BookCardProps) => {
+const BookCard: React.FC<BookCardProps> = ({ 
+  book
+}) => {
+  const bookImage = book.bookPhotos?.length > 0 ? book.bookPhotos[0] : null;
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden border border-booknest-light-gray transition-transform hover:scale-[1.02]">
-      {book.image ? (
+    <div className="bg-booknest-midnight rounded-xl shadow-lg overflow-hidden border border-booknest-primary">
+      {bookImage ? (
         <img 
-          src={book.image} 
+          src={bookImage} 
           alt={book.title} 
           className="w-full h-48 object-cover"
         />
@@ -28,14 +27,20 @@ const BookCard = ({ book }: BookCardProps) => {
       )}
       
       <div className="p-4">
-        <h3 className="font-semibold text-lg truncate">{book.title}</h3>
-        <p className="text-booknest-midnight text-sm mt-1">{book.author}</p>
+        <h3 className="font-semibold text-lg truncate text-booknest-light-gray">
+          {book.title}
+        </h3>
+        <p className="text-booknest-light-gray/80 text-sm mt-1">
+          {book.authors.join(', ')}
+        </p>
         
         <div className="mt-4 flex justify-between items-center">
-          <span className="font-bold text-booknest-accent">${book.price.toFixed(2)}</span>
+          <span className="font-bold text-booknest-accent">
+            S/. {book.price.toFixed(2)}
+          </span>
           <Link 
             to={`/books/${book.id}`}
-            className="text-sm bg-booknest-accent text-white px-3 py-1 rounded hover:bg-blue-600 transition-colors"
+            className="text-sm bg-booknest-accent text-booknest-primary px-3 py-1 rounded hover:bg-booknest-accent/80 transition-colors"
           >
             Ver Detalles
           </Link>

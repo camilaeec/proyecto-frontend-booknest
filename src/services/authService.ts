@@ -10,16 +10,8 @@ export const register = async (userData: any) => {
   return response.data;
 };
 
+// Cambia '/auth/me' por '/users/getMe'
 export const getMe = async () => {
-  const response = await api.get('/auth/me');
+  const response = await api.get('/users/getMe');
   return response.data;
-};
-
-export const verifyToken = async (token: string): Promise<boolean> => {
-  try {
-    // En una implementación real, verificarías con el backend
-    return true; // Simulación
-  } catch (error) {
-    return false;
-  }
 };

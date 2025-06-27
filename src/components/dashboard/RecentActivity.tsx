@@ -1,27 +1,22 @@
-interface ActivityItem {
-  id: number;
-  title: string;
-  date: string;
-  type: string;
-}
+import { type Book } from '../../types/bookTypes'; 
 
 interface RecentActivityProps {
-  activities: ActivityItem[];
+  books: Book[]; 
 }
 
-const RecentActivity = ({ activities }: RecentActivityProps) => {
+const RecentActivity = ({ books }: RecentActivityProps) => {
   return (
     <div className="space-y-4">
-      {activities.map(activity => (
-        <div key={activity.id} className="flex items-center border-b border-lightGray pb-3">
-          <div className="bg-accent rounded-full p-2 mr-4">
-            <span className="text-white text-sm">
-              {activity.type === 'book' ? '📚' : '🔄'}
-            </span>
+      {books.map(book => (
+        <div key={book.id} className="flex items-center border-b border-booknest-light-gray pb-3">
+          <div className="bg-booknest-accent rounded-full p-2 mr-4">
+            <span className="text-booknest-white text-sm">📚</span>
           </div>
           <div>
-            <h4 className="font-medium">{activity.title}</h4>
-            <p className="text-sm text-midnight">{activity.date}</p>
+            <h4 className="font-medium text-booknest-light-gray">{book.title}</h4>
+            <p className="text-sm text-booknest-midnight">
+              {book.authors.join(', ')}
+            </p>
           </div>
         </div>
       ))}

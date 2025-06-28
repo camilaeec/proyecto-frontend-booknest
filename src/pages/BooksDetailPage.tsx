@@ -40,6 +40,7 @@ const BooksDetailPage: React.FC = () => {
 
     fetchBookData();
   }, [id]);
+  
 
   const handleDelete = async () => {
     if (!book || !user) return;

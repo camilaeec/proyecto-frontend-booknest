@@ -7,6 +7,7 @@ import DashboardPage from '../pages/DashboardPage';
 import BooksPage from '../pages/BooksPage';
 import ProfilePage from '../pages/ProfilePage';
 import BooksDetailPage from '../pages/BooksDetailPage';
+import CreateBookPage from '../pages/CreateBookPage';
 
 const AppRouter = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -35,8 +36,9 @@ const AppRouter = () => {
       {/* Rutas protegidas */}
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/books" element={<BooksPage />} />
-        <Route path="/books/:id" element={<BooksDetailPage />} />
+        <Route path="/books/new" element={<CreateBookPage />} />
+      <Route path="/books/:id" element={<BooksDetailPage />} />
+      <Route path="/books" element={<BooksPage />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Route>
       

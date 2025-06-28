@@ -6,6 +6,7 @@ import RecentActivity from '../components/dashboard/RecentActivity';
 import { getRecentBooks, getTransactionStats } from '../services/bookService';
 import Button from '../components/ui/Button';
 import { useNavigate } from 'react-router-dom';
+import type { Book } from '../types/bookTypes';
 
 const DashboardPage = () => {
   const { user } = useAuth();
@@ -15,9 +16,9 @@ const DashboardPage = () => {
     reviews: 0 
   });
   
-  const [recentBooks, setRecentBooks] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [recentBooks, setRecentBooks] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(true); // Usa setter
+  const [error, setError] = useState<string | null>(null); // Usa setter
   const navigate = useNavigate();
 
   const fetchData = async () => {
@@ -30,7 +31,13 @@ const DashboardPage = () => {
         getRecentBooks()
       ]);
       
-      setStats(statsData);
+      // Adapta los datos al formato esperado
+      setStats({
+        books: booksData.length, // Libros recientes
+        transactions: statsData.totalTransactions,
+        reviews: 0 // Todavía no implementado
+      });
+      
       setRecentBooks(booksData);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);

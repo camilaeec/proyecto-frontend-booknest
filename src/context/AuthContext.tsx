@@ -10,6 +10,7 @@ interface AuthContextType {
   register: (userData: any) => Promise<void>;
   logout: () => void;
   loading: boolean;
+  updateUser: (userData: User) => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
@@ -87,13 +88,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null);
   };
 
+  const updateUser = (userData: User) => {
+    setUser(userData);
+  };
+
   const value = {
     user,
     isAuthenticated: !!user,
     login,
     register,
     logout,
-    loading
+    loading,
+    updateUser
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

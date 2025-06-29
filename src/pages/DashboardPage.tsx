@@ -30,12 +30,15 @@ const DashboardPage = () => {
         getTransactionStats(),
         getRecentBooks()
       ]);
+
+      // Mostrar solo los últimos 3 libros
+      const lastThreeBooks = booksData.slice(0, 3);
       
       // Adapta los datos al formato esperado
       setStats({
-        books: booksData.length, // Libros recientes
-        transactions: statsData.totalTransactions,
-        reviews: 0 // Todavía no implementado
+        books: booksData.length || 0, // Libros recientes
+        transactions: statsData.totalTransactions || 0,
+        reviews: statsData.totalReviews || 0// Todavía no implementado
       });
       
       setRecentBooks(booksData);
@@ -110,7 +113,18 @@ const DashboardPage = () => {
       </div>
       
       <div className="mt-8">
-        <h2 className="text-xl font-semibold mb-4">Libros Recientes</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-semibold">Libros Recientes</h2>
+          {recentBooks.length > 0 && (
+            <Button
+              variant="secondary"
+              onClick={() => navigate('/books/new')}
+            >
+              Publicar nuevo libro
+            </Button>
+          )}
+        </div>
+        
         {recentBooks.length === 0 ? (
           <div className="bg-booknest-midnight rounded-xl p-6 text-center">
             <p className="text-booknest-light-gray">

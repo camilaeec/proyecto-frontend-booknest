@@ -6,4 +6,13 @@ export interface User {
   name?: string;
   lastname?: string;
   phoneNumber?: string;
+  rating?: number;
+}
+
+export interface UserUpdateData {
+  name?: string;
+  lastname?: string;
+  email?: string;
+  phoneNumber?: string;
+  password?: string;
 }

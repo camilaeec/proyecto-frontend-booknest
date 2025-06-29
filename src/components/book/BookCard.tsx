@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { type Book } from '../../types/bookTypes';
+import Button from '../ui/Button';
 
 interface BookCardProps {
   book: Book;
@@ -9,7 +10,10 @@ interface BookCardProps {
 }
 
 const BookCard: React.FC<BookCardProps> = ({ 
-  book
+  book,
+  showUserActions = false,
+  onEdit,
+  onDelete
 }) => {
   const bookImage = book.bookPhotos?.length > 0 ? book.bookPhotos[0] : null;
   return (
@@ -26,7 +30,7 @@ const BookCard: React.FC<BookCardProps> = ({
         </div>
       )}
       
-      <div className="p-4">
+      <div className="p-4 flex flex-col flex-grow">
         <h3 className="font-semibold text-lg truncate text-booknest-light-gray">
           {book.title}
         </h3>
@@ -45,6 +49,26 @@ const BookCard: React.FC<BookCardProps> = ({
             Ver Detalles
           </Link>
         </div>
+        {showUserActions && (
+          <div className="mt-4 pt-4 border-t border-booknest-primary/30 flex space-x-2">
+            <Button 
+              variant="secondary" 
+              size="sm"
+              onClick={onEdit}
+              className="flex-1"
+            >
+              Editar
+            </Button>
+            <Button 
+              variant="danger" 
+              size="sm"
+              onClick={onDelete}
+              className="flex-1"
+            >
+              Eliminar
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -1,10 +1,3 @@
-export interface TransactionStats {
-  totalTransactions: number;
-  pendingTransactions: number;
-  completedTransactions: number;
-  rejectedTransactions: number;
-}
-
 import api from './api';
 import type { Book, BookFormData } from '../types/bookTypes';
 
@@ -79,17 +72,31 @@ export const getRecentBooks = async (): Promise<Book[]> => {
 };
 
 // Obtener estadísticas de transacciones (para dashboard)
-export const getTransactionStats = async (): Promise<TransactionStats> => {
+export const getTransactionStats = async () => {
   try {
     const response = await api.get('/transactions/stats');
     return response.data;
   } catch (error) {
     console.error('Error fetching transaction stats', error);
+    
+    // Manejo específico de error 403
+    if (
+      typeof error === 'object' &&
+      error !== null &&
+      'response' in error &&
+      (error as any).response?.status === 403
+    ) {
+      console.log('Acceso denegado - Verificando token');
+      
+      // Opcional: Intentar refrescar el token
+      // await refreshToken();
+      // return getTransactionStats(); // Reintentar
+    }
+    
     return {
-      totalTransactions: 0,
-      pendingTransactions: 0,
-      completedTransactions: 0,
-      rejectedTransactions: 0
+      books: 0,
+      transactions: 0,
+      reviews: 0
     };
   }
 };

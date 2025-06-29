@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -8,6 +9,8 @@ interface ButtonProps {
   onClick?: () => void;
   type?: 'button' | 'submit' | 'reset';
   disabled?: boolean;
+  asLink?: boolean;
+  to?: string;
 }
 
 const Button: React.FC<ButtonProps> = ({ 
@@ -17,7 +20,9 @@ const Button: React.FC<ButtonProps> = ({
   className = '',
   onClick,
   type = 'button',
-  disabled = false
+  disabled = false,
+  asLink = false,
+  to = ''
 }) => {
   const baseClasses = "inline-flex items-center justify-center rounded-md font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2";
   
@@ -33,6 +38,17 @@ const Button: React.FC<ButtonProps> = ({
     md: "py-2 px-4 text-md",
     lg: "py-3 px-6 text-lg"
   };
+
+  if (asLink) {
+    return (
+      <Link
+        to={to}
+        className={`${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`}
+      >
+        {children}
+      </Link>
+    );
+  }
   
   return (
     <button

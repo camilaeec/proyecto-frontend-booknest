@@ -37,7 +37,7 @@ const AppRouter = () => {
       <Route element={<ProtectedRoute />}>
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/books/new" element={<CreateBookPage />} />
-        <Route path="/books/:id" element={<BooksDetailPage />} />
+        <Route path="/books/:idBook" element={<BooksDetailPage />} />
         <Route path="/books" element={<BooksPage />} />
         <Route path="/profile" element={<ProfilePage />} />
       </Route>

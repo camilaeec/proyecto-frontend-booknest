@@ -8,8 +8,8 @@ import Rating from '../components/ui/Rating';
 import BookCard from '../components/book/BookCard';
 
 const BooksDetailPage: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
-  const bookId = id ? parseInt(id, 10) : NaN; 
+  const { idBook } = useParams<{ idBook: string }>();
+  const bookId = idBook ? parseInt(idBook, 10) : NaN; 
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
@@ -30,17 +30,15 @@ const BooksDetailPage: React.FC = () => {
         setLoading(false);
       }
 
-      // Obtener libros relacionados (simulado)
-      try {
+      // Carga relacionados (no bloqueante)
+    try {
       const allBooks = await getBooks();
-      if (book) {
-        setRelatedBooks(allBooks.filter(b => b.idBook !== bookId).slice(0, 3));
-      }
-      } catch (error) {
-        console.warn("No se pudieron cargar libros relacionados:", error);
-        setRelatedBooks([]);  // dejamos vacío
-      }
-    };
+      setRelatedBooks(allBooks.filter(b => b.idBook !== bookId).slice(0,3));
+    } catch (error) {
+      console.warn("No se pudieron cargar libros relacionados:", error);
+      // dejamos relatedBooks = []
+    }
+  };
 
     fetchBookData();
   }, [bookId]);

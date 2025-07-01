@@ -43,7 +43,7 @@ const BookCard: React.FC<BookCardProps> = ({
             S/. {book.price.toFixed(2)}
           </span>
           <Link 
-            to={`/books/${book.id}`}
+            to={`/books/${book.idBook}`}
             className="text-sm bg-booknest-accent text-booknest-primary px-3 py-1 rounded hover:bg-booknest-accent/80 transition-colors"
           >
             Ver Detalles

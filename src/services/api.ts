@@ -32,6 +32,15 @@ api.interceptors.request.use(config => {
 api.interceptors.response.use(
   response => response,
   error => {
+    const status = error.response?.status;
+    const url = error.config?.url || '';
+    
+    if (status === 401) {
+      toast.error('Sesión expirada. Por favor inicia sesión de nuevo.');
+      localStorage.removeItem('token');
+      window.location.href = '/login';
+    }
+
     if (error.response?.status === 403) {
       toast.error('Acceso denegado. Por favor, inicia sesión nuevamente.');
       localStorage.removeItem('token');

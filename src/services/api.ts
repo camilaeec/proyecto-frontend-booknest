@@ -33,30 +33,15 @@ api.interceptors.response.use(
   response => response,
   error => {
     const status = error.response?.status;
-    const url = error.config?.url || '';
-    
-    if (status === 401) {
-      toast.error('Sesión expirada. Por favor inicia sesión de nuevo.');
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
+    const url    = error.config?.url || '';
 
-    if (error.response?.status === 403) {
-      toast.error('Acceso denegado. Por favor, inicia sesión nuevamente.');
+    if (status === 401 || (status === 403 && url.startsWith('/auth'))) {
+      toast.error('Sesión expirada o acceso denegado');
       localStorage.removeItem('token');
       window.location.href = '/login';
     }
     return Promise.reject(error);
   }
 )
-
-api.interceptors.request.use(config => {
-  const token = localStorage.getItem('token');
-  console.log('Token:', token); // Agrega esto
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
 
 export default api;

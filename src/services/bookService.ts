@@ -1,15 +1,12 @@
 import api from './api';
 import type { Book, BookFormData } from '../types/bookTypes';
 
-export const getBooks = async (search = ''): Promise<Book[]> => {
-  try {
-    const response = await api.get('/books', {
-      params: { search }
-    });
-    return response.data;
-  } catch (error) {
-    throw new Error('Error fetching books');
-  }
+export const getBooks = async (search?: string): Promise<Book[]> => {
+  const url = search?.trim()
+    ? `/books?search=${encodeURIComponent(search.trim())}`
+    : `/books`;       // <-- sin query
+  const { data } = await api.get<Book[]>(url);
+  return data;
 };
 
 export const getBookById = async (id: number): Promise<Book> => {

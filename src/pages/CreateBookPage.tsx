@@ -12,9 +12,9 @@ const CreateBookPage = () => {
   const handleSubmit = async (bookData: BookFormData) => {
     try {
       setLoading(true);
-      await createBook(bookData);
+      const createdBook = await createBook(bookData);
       toast.success('Libro creado exitosamente');
-      navigate('/books');
+      navigate('/books/${createdBook.id}');
     } catch (error) {
       toast.error('Error al crear el libro');
       console.error(error);

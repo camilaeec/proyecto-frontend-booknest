@@ -23,9 +23,12 @@ export const getBookById = async (id: number): Promise<Book> => {
 
 export const createBook = async (bookData: BookFormData): Promise<Book> => {
   try {
+    console.log('Enviando solicitud para crear libro con datos:', bookData);
     const response = await api.post('/books', bookData);
+    console.log('Libro creado exitosamente:', response.data);
     return response.data;
   } catch (error) {
+    console.error('Error creating book:', error);
     throw new Error('Error creating book');
   }
 };

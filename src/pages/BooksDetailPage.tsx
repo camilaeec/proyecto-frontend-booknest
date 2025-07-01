@@ -9,6 +9,7 @@ import BookCard from '../components/book/BookCard';
 
 const BooksDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const bookId = id ? parseInt(id, 10) : NaN; 
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
   const [relatedBooks, setRelatedBooks] = useState<Book[]>([]);
@@ -18,35 +19,38 @@ const BooksDetailPage: React.FC = () => {
     useEffect(() => {
     const fetchBookData = async () => {
       try {
-        if (!id) return;
+        if (isNaN(bookId)) return;
         
-        const bookData = await getBookById(parseInt(id));
+        const bookData = await getBookById(bookId);
         setBook(bookData);
         
-        // Obtener libros relacionados (simulado)
-        const allBooks = await getBooks();
-        setRelatedBooks(
-          allBooks
-            .filter(b => b.id !== bookData.id)
-            .slice(0, 3)
-        );
-        
       } catch (error) {
-        console.error("Error fetching book:", error);
+        console.error("Error fetching main book:", error);
       } finally {
         setLoading(false);
+      }
+
+      // Obtener libros relacionados (simulado)
+      try {
+      const allBooks = await getBooks();
+      if (book) {
+        setRelatedBooks(allBooks.filter(b => b.idBook !== bookId).slice(0, 3));
+      }
+      } catch (error) {
+        console.warn("No se pudieron cargar libros relacionados:", error);
+        setRelatedBooks([]);  // dejamos vacío
       }
     };
 
     fetchBookData();
-  }, [id]);
+  }, [bookId]);
   
 
   const handleDelete = async () => {
     if (!book || !user) return;
     
     try {
-      await deleteBook(book.id);
+      await deleteBook(book.idBook);
       navigate('/books');
     } catch (error) {
       console.error("Error deleting book:", error);
@@ -99,7 +103,7 @@ const BooksDetailPage: React.FC = () => {
               </div>
               
               <div className="text-2xl font-bold text-booknest-accent">
-                S/. {book.price.toFixed(2)}
+                S/. {typeof book.price === 'number' ? book.price.toFixed(2) : 'N/A'}
               </div>
             </div>
             
@@ -141,7 +145,7 @@ const BooksDetailPage: React.FC = () => {
             <div className="mt-8 flex flex-wrap gap-4">
               {isOwner ? (
                 <div className="flex space-x-3">
-                  <Link to={`/books/edit/${book.id}`}>
+                  <Link to={`/books/edit/${book.idBook}`}>
                     <Button variant="secondary">Editar libro</Button>
                   </Link>
                   <Button 
@@ -199,7 +203,7 @@ const BooksDetailPage: React.FC = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {relatedBooks.map(relatedBook => (
                 <BookCard 
-                  key={relatedBook.id} 
+                  key={relatedBook.idBook} 
                   book={relatedBook} 
                 />
               ))}
